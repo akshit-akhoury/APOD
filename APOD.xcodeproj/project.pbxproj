@@ -13,6 +13,9 @@
 		013D5345283A494E000A64AA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 013D5343283A494E000A64AA /* Main.storyboard */; };
 		013D5347283A4956000A64AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 013D5346283A4956000A64AA /* Assets.xcassets */; };
 		013D534A283A4956000A64AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 013D5348283A4956000A64AA /* LaunchScreen.storyboard */; };
+		013D5352283AB2BC000A64AA /* ApodData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D5351283AB2BC000A64AA /* ApodData.swift */; };
+		013D5354283AB604000A64AA /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D5353283AB604000A64AA /* APIResponse.swift */; };
+		013D5356283AB637000A64AA /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D5355283AB637000A64AA /* DateExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		013D5346283A4956000A64AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		013D5349283A4956000A64AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		013D534B283A4956000A64AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		013D5351283AB2BC000A64AA /* ApodData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodData.swift; sourceTree = "<group>"; };
+		013D5353283AB604000A64AA /* APIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
+		013D5355283AB637000A64AA /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +62,50 @@
 		013D533C283A494E000A64AA /* APOD */ = {
 			isa = PBXGroup;
 			children = (
+				013D535A283AB69A000A64AA /* ViewControllers */,
+				013D5359283AB680000A64AA /* StoryBoards */,
+				013D5358283AB66C000A64AA /* Extensions */,
+				013D5357283AB65A000A64AA /* Model */,
 				013D533D283A494E000A64AA /* AppDelegate.swift */,
 				013D533F283A494E000A64AA /* SceneDelegate.swift */,
-				013D5341283A494E000A64AA /* ViewController.swift */,
-				013D5343283A494E000A64AA /* Main.storyboard */,
 				013D5346283A4956000A64AA /* Assets.xcassets */,
-				013D5348283A4956000A64AA /* LaunchScreen.storyboard */,
 				013D534B283A4956000A64AA /* Info.plist */,
 			);
 			path = APOD;
+			sourceTree = "<group>";
+		};
+		013D5357283AB65A000A64AA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				013D5353283AB604000A64AA /* APIResponse.swift */,
+				013D5351283AB2BC000A64AA /* ApodData.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		013D5358283AB66C000A64AA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				013D5355283AB637000A64AA /* DateExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		013D5359283AB680000A64AA /* StoryBoards */ = {
+			isa = PBXGroup;
+			children = (
+				013D5348283A4956000A64AA /* LaunchScreen.storyboard */,
+				013D5343283A494E000A64AA /* Main.storyboard */,
+			);
+			path = StoryBoards;
+			sourceTree = "<group>";
+		};
+		013D535A283AB69A000A64AA /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				013D5341283A494E000A64AA /* ViewController.swift */,
+			);
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,8 +180,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				013D5342283A494E000A64AA /* ViewController.swift in Sources */,
+				013D5356283AB637000A64AA /* DateExtension.swift in Sources */,
 				013D533E283A494E000A64AA /* AppDelegate.swift in Sources */,
 				013D5340283A494E000A64AA /* SceneDelegate.swift in Sources */,
+				013D5354283AB604000A64AA /* APIResponse.swift in Sources */,
+				013D5352283AB2BC000A64AA /* ApodData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
