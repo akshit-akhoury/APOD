@@ -19,6 +19,44 @@ struct APIResponse:Decodable
     let url:URL
 }
 
+class apodImage: NSObject,NSSecureCoding
+{
+    static var supportsSecureCoding: Bool {
+           return true
+    }
+    
+    let title:String
+    let explanation:String
+    let copyright:String
+    let imageData:Data
+    
+    func encode(with coder: NSCoder)
+    {
+        coder.encode(title,forKey: "title")
+        coder.encode(explanation,forKey: "explanation")
+        coder.encode(copyright,forKey: "copyright")
+        coder.encode(imageData,forKey: "imageData")
+    }
+    
+    required init?(coder: NSCoder)
+    {
+        title = coder.decodeObject(forKey: "title") as? String ?? ""
+        explanation = coder.decodeObject(forKey: "explanation") as? String ?? ""
+        copyright = coder.decodeObject(forKey: "copyright") as? String ?? ""
+        imageData = coder.decodeObject(forKey: "imageData") as? Data ?? Data()
+    }
+    
+    init(title:String,explanation:String,copyright:String,imageData:Data)
+    {
+        self.title = title
+        self.explanation = explanation
+        self.copyright = copyright
+        self.imageData = imageData
+        super.init()
+    }
+    
+}
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var copyrightLabel: UILabel!
@@ -29,6 +67,7 @@ class ViewController: UIViewController {
     {
         super.viewDidLoad()
         imageView.contentMode = .scaleAspectFill
+        activityView.hidesWhenStopped = true
         
         let date = Date()
         let dateDecoder = DateFormatter()
@@ -38,13 +77,28 @@ class ViewController: UIViewController {
         print(today)
         print(yesterday)
         let cachedData = UserDefaults.standard.object(forKey: today)
-        if(cachedData != nil && false)
+        if(cachedData != nil )
         {
-            imageView.image = UIImage(data: (cachedData as? Data)!)
+            do
+            {
+                let decodedData = try NSKeyedUnarchiver.unarchivedObject(ofClass: apodImage.self, from: cachedData as! Data)
+                guard let decodedData = decodedData else {
+                    return
+                }
+                self.explanationTextView.text = decodedData.explanation
+                self.copyrightLabel.text = decodedData.copyright
+                self.title = decodedData.title
+                self.imageView.image = UIImage(data: decodedData.imageData)
+                
+            }
+            catch
+            {
+                print(error)
+            }
         }
         else
         {
-            let url = URL(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date=2022-05-17")!
+            let url = URL(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")!
             let urlTask = URLSession.shared.dataTask(with: url) { data, resp, err in
                 if(err == nil)
                 {
@@ -59,7 +113,7 @@ class ViewController: UIViewController {
                         DispatchQueue.main.async
                         { [self] in
                             self.title = resp.title
-                            self.copyrightLabel.text = resp.copyright != nil ? "Copyright:"+resp.copyright! : ""
+                            self.copyrightLabel.text = resp.copyright ?? ""
                             self.explanationTextView.text = resp.explanation
                         }
                         let imageTask = URLSession.shared.dataTask(with: resp.hdurl) { imageData, response, error in
@@ -68,15 +122,28 @@ class ViewController: UIViewController {
                             }
                             
                             DispatchQueue.main.async
-                            { [self] in
-                                imageView.image = UIImage(data: imageData)
-                                UserDefaults.standard.set(imageData, forKey: today)
-                                UserDefaults.standard.removeObject(forKey: yesterday)
-                                activityView.stopAnimating()
+                            { [weak self] in
+                                guard let self = self else {return}
+                                self.imageView.image = UIImage(data: imageData)
+                                self.activityView.stopAnimating()
+                                let cacheData = apodImage(title: resp.title, explanation: resp.explanation, copyright: resp.copyright ?? "", imageData: imageData)
+                                do
+                                {
+                                    let archivedData = try NSKeyedArchiver.archivedData(withRootObject: cacheData, requiringSecureCoding: false)
+                                    UserDefaults.standard.set(archivedData, forKey: today)
+                                    UserDefaults.standard.removeObject(forKey: yesterday)
+                                }
+                                catch
+                                {
+                                    print(error)
+                                }
                             }
                         }
                         imageTask.resume()
-                        DispatchQueue.main.async { [self] in activityView.startAnimating()}
+                        DispatchQueue.main.async {
+                            [weak self] in
+                            guard let self = self else {return}
+                            self.activityView.startAnimating()}
                     }
                     catch {
                         print(error)
