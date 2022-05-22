@@ -16,6 +16,8 @@
 		013D5352283AB2BC000A64AA /* ApodData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D5351283AB2BC000A64AA /* ApodData.swift */; };
 		013D5354283AB604000A64AA /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D5353283AB604000A64AA /* APIResponse.swift */; };
 		013D5356283AB637000A64AA /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D5355283AB637000A64AA /* DateExtension.swift */; };
+		013D535C283AB890000A64AA /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D535B283AB890000A64AA /* NetworkMonitor.swift */; };
+		013D5361283ABEF5000A64AA /* PresentAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D5360283ABEF5000A64AA /* PresentAlertViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		013D5351283AB2BC000A64AA /* ApodData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApodData.swift; sourceTree = "<group>"; };
 		013D5353283AB604000A64AA /* APIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
 		013D5355283AB637000A64AA /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		013D535B283AB890000A64AA /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		013D5360283ABEF5000A64AA /* PresentAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentAlertViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +70,7 @@
 				013D5359283AB680000A64AA /* StoryBoards */,
 				013D5358283AB66C000A64AA /* Extensions */,
 				013D5357283AB65A000A64AA /* Model */,
+				013D535D283ABA70000A64AA /* Src */,
 				013D533D283A494E000A64AA /* AppDelegate.swift */,
 				013D533F283A494E000A64AA /* SceneDelegate.swift */,
 				013D5346283A4956000A64AA /* Assets.xcassets */,
@@ -87,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				013D5355283AB637000A64AA /* DateExtension.swift */,
+				013D5360283ABEF5000A64AA /* PresentAlertViewController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -106,6 +112,14 @@
 				013D5341283A494E000A64AA /* ViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		013D535D283ABA70000A64AA /* Src */ = {
+			isa = PBXGroup;
+			children = (
+				013D535B283AB890000A64AA /* NetworkMonitor.swift */,
+			);
+			name = Src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,6 +199,8 @@
 				013D5340283A494E000A64AA /* SceneDelegate.swift in Sources */,
 				013D5354283AB604000A64AA /* APIResponse.swift in Sources */,
 				013D5352283AB2BC000A64AA /* ApodData.swift in Sources */,
+				013D5361283ABEF5000A64AA /* PresentAlertViewController.swift in Sources */,
+				013D535C283AB890000A64AA /* NetworkMonitor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

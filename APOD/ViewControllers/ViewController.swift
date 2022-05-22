@@ -21,7 +21,7 @@ class ViewController: UIViewController
     {
         do
         {
-            let archivedData = try NSKeyedArchiver.archivedData(withRootObject: cacheData, requiringSecureCoding: false)
+            let archivedData = try NSKeyedArchiver.archivedData(withRootObject: cacheData, requiringSecureCoding: true)
             UserDefaults.standard.set(archivedData, forKey: today!)
             UserDefaults.standard.removeObject(forKey: yesterday!)
         }
@@ -55,30 +55,35 @@ class ViewController: UIViewController
     
     fileprivate func fetchFromInternet()
     {
-        let url = URL(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&date="+today!)!
+        let url = URL(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")!
         let urlTask = URLSession.shared.dataTask(with: url) { [weak self] data, resp, err in
             guard let self = self else { return }
-            if(err == nil)
+            guard let response = resp as? HTTPURLResponse else {return}
+            if(err == nil && response.statusCode >= 200 && response.statusCode <= 299)
             {
                 guard let data = data else {
                     return
                 }
-                let dec = JSONDecoder()
+                let jsonDecoder = JSONDecoder()
                 do
                 {
-                    let resp = try dec.decode(APIResponse.self, from: data)
-                    print(resp.title)
+                    let apiResponse = try jsonDecoder.decode(APIResponse.self, from: data)
+                    print(apiResponse.title)
                     DispatchQueue.main.async
                     { [self] in
-                        self.title = resp.title
-                        self.copyrightLabel.text = resp.copyright ?? ""
-                        self.explanationTextView.text = resp.explanation
+                        self.title = apiResponse.title
+                        self.copyrightLabel.text = apiResponse.copyright ?? ""
+                        self.explanationTextView.text = apiResponse.explanation
                     }
-                    self.fetchImageFromAPIResponse(resp)
+                    self.fetchImageFromAPIResponse(apiResponse)
                 }
                 catch {
-                    print(error)
+                    self.presentAlert(title: NSLocalizedString("Error", comment: ""), message: error.localizedDescription)
                 }
+            }
+            else
+            {
+                self.presentAlert(title: NSLocalizedString("Invalid response", comment: ""), message: "Code: \(response.statusCode)")
             }
         }
         urlTask.resume()
@@ -93,31 +98,51 @@ class ViewController: UIViewController
         self.yesterday = dateDecoder.string(from: date.dayBefore)
     }
     
+    fileprivate func configureWithCachedData(_ cachedData: Any?) {
+        do
+        {
+            let decodedData = try NSKeyedUnarchiver.unarchivedObject(ofClass: ApodData.self, from: cachedData as! Data)
+            guard let decodedData = decodedData else {
+                return
+            }
+            self.explanationTextView.text = decodedData.explanation
+            self.copyrightLabel.text = decodedData.copyright
+            self.title = decodedData.title
+            self.imageView.image = UIImage(data: decodedData.imageData)
+            
+        }
+        catch
+        {
+            //If we ran into issues with cache fetch, get it from the web
+            fetchFromInternet()
+        }
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         activityView.hidesWhenStopped = true
         getDates()
-        let cachedData = UserDefaults.standard.object(forKey: today!)
-        if(cachedData != nil )
+        let connected = NetworkMonitor.shared.connected
+        let todayData = UserDefaults.standard.object(forKey: today!)
+        //Check if we already have today's data
+        if(todayData != nil)
         {
-            do
+            configureWithCachedData(todayData)
+        }
+        else if(!connected)
+        {
+            let yesterdayData = UserDefaults.standard.object(forKey: yesterday!)
+            if(yesterdayData != nil)
             {
-                let decodedData = try NSKeyedUnarchiver.unarchivedObject(ofClass: ApodData.self, from: cachedData as! Data)
-                guard let decodedData = decodedData else {
-                    return
-                }
-                self.explanationTextView.text = decodedData.explanation
-                self.copyrightLabel.text = decodedData.copyright
-                self.title = decodedData.title
-                self.imageView.image = UIImage(data: decodedData.imageData)
-                
+                self.presentAlert(title: NSLocalizedString("No Internet", comment: ""), message: NSLocalizedString("We are not connected to the internet, showing you the last image we have.", comment: ""))
+                configureWithCachedData(yesterdayData)
             }
-            catch
+            else
             {
-                //If we ran into issues with cache fetch, get it from the web
-                fetchFromInternet()
+                //show a different error
+                self.presentAlert(title: NSLocalizedString("No Internet", comment: ""), message: NSLocalizedString("No internet and no stored image found!", comment: ""))
             }
         }
         else
